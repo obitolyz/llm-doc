@@ -19,6 +19,8 @@ fastchat 由四个组件组成，分别为
 
 `--limit-worker-concurrency`: 防止 OOM
 
+`--model-list-mode`: once or reload. 加载模型列表一次或者每次都加载
+
 ## conversation template
 
 ## openai api
