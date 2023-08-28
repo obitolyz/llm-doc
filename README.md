@@ -20,3 +20,5 @@ fastchat 由四个组件组成，分别为
 `--limit-worker-concurrency`: 防止 OOM
 
 ## conversation template
+
+## openai api
