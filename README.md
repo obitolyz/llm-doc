@@ -1,7 +1,7 @@
 # 模型部署分享
 ## FastChat 架构 ⭐️26.8k
 fastchat 由四个组件组成，分别为
-- gradio web server 用于简单的 UI 交互
+- gradio web server 用于简单的 UI 交互，可视化部署
 - Controller 用于管理 `model worker` 的模型名和模型地址
 - openai_api server 提供与 **openai** 兼容的 API
 - model worker 运行大模型，定时向 **Controller** 发送心跳
@@ -158,6 +158,55 @@ PRETRAINED_VOCAB_FILES_MAP = {
 }
 ```
 
+## 私有 PIP 源
+```bash
+pip3 install pypiserver
+nohup pypi-server run -p 8080 /data/packages &
+
+# 会下载所有依赖包，增量复制 /data/packages
+pip3 download <package> -d /data/packages
+pip3 download -r requirements.txt -d /data/packages
+
+# 安装
+pip3 install <package> -i http://127.0.0.1:8080/simple --trusted-host 127.0.0.1
+pip3 install -r requirements.txt -i http://127.0.0.1:8080/simple --trusted-host 127.0.0.1
+```
+
+### pyproject.toml
+```toml
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fschat"
+version = "0.2.26"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+]
+dependencies = [
+    "aiohttp", "fastapi", "httpx"
+]
+
+[project.optional-dependencies]
+model_worker = ["accelerate>=0.21", "peft", "sentencepiece", "torch", "transformers>=4.31.0"]
+webui = ["gradio"]
+train = ["einops", "flash-attn>=2.0", "wandb"]
+```
+
+```bash
+# 安装
+pip3 install toml-to-requirements
+
+# 生成 requirements.txt 文件
+toml-to-req --toml-file pyproject.toml
+
+# 包含额外的依赖
+toml-to-req --toml-file pyproject.toml --include-optional
+toml-to-req --toml-file pyproject.toml --include-optional --optional-lists model_worker,webui
+```
 
 ## 参考资料
 1. [数据缓存系列分享(一)：打开大模型应用的另一种方式](https://developer.aliyun.com/article/1279633)
