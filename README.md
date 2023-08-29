@@ -118,6 +118,28 @@ tokenizer = AutoTokenizer.from_pretrained("baichuan-inc/Baichuan-13B-Chat")
   }
 }
 ```
+
+
+### tokenization_baichuan.py
+Tokenizer 的作用大致是`分词`，将词转变成整数 ID，目的是将一段文本转换成整数 ID 序列，也可以将 ID 序列转换成文本。
+```python
+VOCAB_FILES_NAMES = {"vocab_file": "tokenizer.model"}
+PRETRAINED_VOCAB_FILES_MAP = {
+    "vocab_file": {},
+    "tokenizer_file": {},
+}
+
+# tokenization_llama
+VOCAB_FILES_NAMES = {"vocab_file": "tokenizer.model"}
+PRETRAINED_VOCAB_FILES_MAP = {
+    "vocab_file": {
+        "hf-internal-testing/llama-tokenizer": "https://huggingface.co/hf-internal-testing/llama-tokenizer/resolve/main/tokenizer.model",
+    },
+    "tokenizer_file": {
+        "hf-internal-testing/llama-tokenizer": "https://huggingface.co/hf-internal-testing/llama-tokenizer/resolve/main/tokenizer_config.json",
+    },
+}
+```
 ### generation_config.json
 ```json
 {
@@ -135,3 +157,7 @@ tokenizer = AutoTokenizer.from_pretrained("baichuan-inc/Baichuan-13B-Chat")
   "transformers_version": "4.29.2"
 }
 ```
+
+
+## 参考资料
+1. [数据缓存系列分享(一)：打开大模型应用的另一种方式](https://developer.aliyun.com/article/1279633)
