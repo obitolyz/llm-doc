@@ -216,13 +216,19 @@ toml-to-req --toml-file pyproject.toml --include-optional --optional-lists model
 ## text-generation-webui
 ## triton-inference-server
 
+## BentoML
+
 ## 开源大模型训练框架
 ### colossal AI chat
 ### DeepSpeed chat
+
+## 向量数据库
 
 ## 参考资料
 1. [数据缓存系列分享(一)：打开大模型应用的另一种方式](https://developer.aliyun.com/article/1279633)
 2. [百度技术｜超大模型工程化实践打磨，百度智能云发布云原生 AI 2.0 方案](https://www.6aiq.com/article/1660746652120)
 3. [【AI 充电】KServe + Fluid 加速大模型推理](https://juejin.cn/post/7249644495174893626)
 4. [openai api](https://platform.openai.com/docs/api-reference/chat)
-5. [how to use tiktoken in offline mode computer](https://stackoverflow.com/questions/76106366/how-to-use-tiktoken-in-offline-mode-computer)
+5. [chat completions api](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
+6. [how to use tiktoken in offline mode computer](https://stackoverflow.com/questions/76106366/how-to-use-tiktoken-in-offline-mode-computer)
+7. [tokenizer_summary](https://huggingface.co/docs/transformers/tokenizer_summary)
