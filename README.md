@@ -1,5 +1,5 @@
 # 模型部署分享
-## FastChat 架构 ⭐️26.8k
+## FastChat ⭐️27k
 fastchat 由四个组件组成，分别为
 - gradio web server 用于简单的 UI 交互，可视化部署
 - Controller 用于管理 `model worker` 的模型名和模型地址
@@ -22,9 +22,87 @@ fastchat 由四个组件组成，分别为
 ### gradio web server 主要参数
 `--model-list-mode`: **once** or **reload**. 加载模型列表一次或者每次都加载
 
-## conversation template
+## text-generation-webui ⭐️22.8k
+单体服务，以插件的方式支持 `openai api`，支持的模型有：
+-  Llama-2-chat
+-  Alpaca
+-  Vicuna
+-  WizardLM
+-  StableLM
+-  Baichuan
+
+```bash
+python server.py --listen --api --extensions openai
+
+Starting API at http://0.0.0.0:5000/api
+Starting OpenAI compatible api: OPENAI_API_BASE=http://0.0.0.0:5001/v1
+```
+
+![text-gen-webui-model](./images/text-gen-webui-model.png)
+
+![text-gen-webui-training](./images/text-gen-webui-training.png)
 
 ## openai api
+
+### POST v1/chat/completions
+请求体
+```yaml
+model:
+messages:
+  - role # One of system, user, assistant, or function
+    content
+temperature: # 采样温度，0 ~ 2 之间，值越低，答案越明确
+n: # 输出多少个 choice，默认为 1
+stream: # 流式处理，true or false
+max_tokens: 
+```
+返回体
+```json
+{
+  "id": "chatcmpl-123",
+  "object": "chat.completion",
+  "created": 1677652288,
+  "model": "gpt-3.5-turbo-0613",
+  "choices": [{
+    "index": 0,
+    "message": {
+      "role": "assistant",
+      "content": "\n\nHello there, how may I assist you today?",
+    },
+    "finish_reason": "stop"
+  }],
+  "usage": {
+    "prompt_tokens": 9,
+    "completion_tokens": 12,
+    "total_tokens": 21
+  }
+}
+
+// stream = true
+{
+  "id": "chatcmpl-123",
+  "object": "chat.completion.chunk",
+  "created": 1677652288,
+  "model": "gpt-3.5-turbo",
+  "choices": [{
+    "index": 0,
+    "delta": {
+      "content": "Hello",
+    },
+    "finish_reason": "stop"
+  }]
+}
+
+```
+
+### POST v1/embeddings
+请求体
+```yaml
+input: # string or array of tokens
+model: 
+```
+
+### GET v1/models
 
 ## Baichuan-13B Demo
 ```python
@@ -119,7 +197,6 @@ tokenizer = AutoTokenizer.from_pretrained("baichuan-inc/Baichuan-13B-Chat")
 }
 ```
 
-
 ### tokenization_baichuan.py
 Tokenizer 的作用大致是`分词`，将词转变成整数 ID，目的是将一段文本转换成整数 ID 序列，也可以将 ID 序列转换成文本。
 ```python
@@ -142,6 +219,34 @@ PRETRAINED_VOCAB_FILES_MAP = {
 ```
 
 ### config.json
+```json
+{
+  "architectures": [
+    "BaiChuanForCausalLM"
+  ],
+  "auto_map": {
+    "AutoConfig": "configuration_baichuan.BaiChuanConfig",
+    "AutoModelForCausalLM": "modeling_baichuan.BaiChuanForCausalLM"
+  },
+  "bos_token_id": 1,
+  "eos_token_id": 2,
+  "hidden_act": "silu",
+  "hidden_size": 4096,
+  "initializer_range": 0.02,
+  "intermediate_size": 11008,
+  "max_position_embeddings": 4096,
+  "model_type": "baichuan",
+  "num_attention_heads": 32,
+  "num_hidden_layers": 32,
+  "pad_token_id": 0,
+  "rms_norm_eps": 1e-06,
+  "tie_word_embeddings": false,
+  "torch_dtype": "float32",
+  "transformers_version": "4.29.1",
+  "use_cache": true,
+  "vocab_size": 64000
+}
+```
 ### generation_config.json
 ```json
 {
@@ -213,7 +318,6 @@ toml-to-req --toml-file pyproject.toml --include-optional --optional-lists model
 ## 模型缓存加速
 
 ## 阿里 modelscope
-## text-generation-webui
 ## triton-inference-server
 
 ## BentoML
